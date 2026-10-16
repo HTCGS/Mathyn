@@ -250,8 +250,10 @@ print("Simpson's rule: {:.4f}".format(s))
 # y_series = fourier_series(lambda x: x + 1, np.pi, 5, x)
 
 # plt.figure()
+# x = np.linspace(-2, 2, 50)
+# y = np.linspace(-2, 2, 50)
 # plt.plot(x, y)
-# plt.plot(x, y_series)
+# plt.savefig("./plot.png", dpi=150, bbox_inches="tight")
 # plt.show()
 
 # u = np.linspace(-2, 2, 50)
