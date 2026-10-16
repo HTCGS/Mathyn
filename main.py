@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from calculus import *
+import mathyn
 
 def func(x): return np.ones_like(x)
 
@@ -11,6 +12,7 @@ print(df(3))
 d2f = derivative_function(df)
 print(d2f(3))
 
+ag =  mathyn.differentiation
 
 a, b = -2, 2
 n = 10

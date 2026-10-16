@@ -36,3 +36,8 @@ def merge_sort(arr):
 arr = np.array([2, 1, 4, 3])
 arr = merge_sort(arr)
 print(arr)
+
+plt.figure()
+plt.bar(["1","2","3","4"], [2, 1, 4, 3], width=1)
+plt.bar(["1","2","3","4"], arr, width=0.7)
+plt.savefig("./hist.png", dpi=150, bbox_inches="tight")
