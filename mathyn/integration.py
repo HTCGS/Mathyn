@@ -1,3 +1,7 @@
+import numpy as np
+from mathyn.coordinate_transforms import *
+from mathyn.differentiation import derivative
+
 def left_point_rule(f, a, b, n):
     h = (b - a) / n
     x = np.arange(a, b, h)
@@ -38,6 +42,9 @@ def simpsons_rule(f, a, b, n=10):
     odd = y[1::2]
     s = (h / 3) * (y[0] + y[-1] + 2*even[1:-1].sum() + 4*odd.sum())
     return s
+
+def integral(f, a, b, xn=10):
+    return simpsons_rule(f, a, b, xn)
 
 def double_integral(f, range, f_lower, f_upper, axis=0, xn=10, yn=10):
     if axis == 1:
@@ -94,45 +101,45 @@ def triple_integral(f, range_x, fy_lower, fy_upper, fz_lower, fz_upper, axis="xy
 
 def arc_length(f, a, b, n):
     dx = (b - a) / (2 * n)
-    l = simpsons_rule(lambda x: np.sqrt(1 + (derivative(f, x, dx)**2)), a, b, n)
+    l = integral(lambda x: np.sqrt(1 + (derivative(f, x, dx)**2)), a, b, n)
     return l
 
 
 def average_value(f, a, b, n):
-    value = 1/(b-a) * simpsons_rule(f, a, b, n)
+    value = 1/(b-a) * integral(f, a, b, n)
     return value
 
 
 def surface_area_of_revolution_about_y(f, a, b, n):
     dx = (b - a) / (2 * n)
-    area = simpsons_rule(lambda x: 2 * x * np.pi * np.sqrt(1 + (derivative(f, x, dx)**2)), a, b, n)
+    area = integral(lambda x: 2 * x * np.pi * np.sqrt(1 + (derivative(f, x, dx)**2)), a, b, n)
     return area
 
 
 def surface_area_of_revolution_about_x(f, a, b, n):
     dx = (b - a) / (2 * n)
-    area = simpsons_rule(lambda x: 2 * f(x) * np.pi * np.sqrt(1 + (derivative(f, x, dx)**2)), a, b, n)
+    area = integral(lambda x: 2 * f(x) * np.pi * np.sqrt(1 + (derivative(f, x, dx)**2)), a, b, n)
     return area
 
 
 def volume_of_revolution(f, a, b, n):
-    volume = simpsons_rule(lambda x: np.pi * np.power(f(x), 2), a, b, n)
+    volume = integral(lambda x: np.pi * np.power(f(x), 2), a, b, n)
     return volume
 
 
 def volume_of_revolution_between_curves(f1, f2, a, b, n):
-    volume = simpsons_rule(lambda x: np.pi * (np.power(f1(x), 2) - np.power(f2(x), 2)), a, b, n)
+    volume = integral(lambda x: np.pi * (np.power(f1(x), 2) - np.power(f2(x), 2)), a, b, n)
     return volume
 
 
 def moments_of_system(f1, f2, a, b, n):
-    Mx = simpsons_rule(lambda x: 0.5 * (np.power(f1(x), 2) - np.power(f2(x), 2)), a, b, n)
-    My = simpsons_rule(lambda x: x * (f1(x) - f2(x)), a, b, n)
+    Mx = integral(lambda x: 0.5 * (np.power(f1(x), 2) - np.power(f2(x), 2)), a, b, n)
+    My = integral(lambda x: x * (f1(x) - f2(x)), a, b, n)
     return (Mx, My)
 
 
 def center_of_mass(f1, a, b, n):
-    area = simpsons_rule(lambda x: f1(x), a, b, n)
+    area = integral(lambda x: f1(x), a, b, n)
     Mx, My = moments_of_system(f1, lambda x: 0, a, b, n)
     x = My / area
     y = Mx / area
@@ -140,7 +147,7 @@ def center_of_mass(f1, a, b, n):
 
 
 def center_of_mass_between_curves(f1, f2, a, b, n):
-    area = simpsons_rule(lambda x: f1(x) - f2(x), a, b, n)
+    area = integral(lambda x: f1(x) - f2(x), a, b, n)
     Mx, My = moments_of_system(f1, f2, a, b, n)
     x = My / area
     y = Mx / area

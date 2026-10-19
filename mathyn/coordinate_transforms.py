@@ -1,3 +1,5 @@
+import numpy as np
+
 def convert_to_polar_function(f):
     return lambda r, phi: f(r*np.cos(phi), r*np.sin(phi))
 

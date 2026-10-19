@@ -1,121 +1,7 @@
-def line_by_point_and_slope(point, slope):
-    px, py = point
-    return lambda x: py + slope*(x - px)
-
-
-def line_by_point_and_vector(point, vector):
-    px, py = point
-    vx, vy = vector
-    if vx == 0 or vy == 0:
-        return lambda x: 0
-    return lambda x: py + (vy * ((x - px) / vx))
-
-
-def line_by_two_points(p1, p2, x):
-    vector = [p2[0] - p1[0], p2[1] - p1[1]]
-    return line_by_point_and_vector(p1, vector, x)
-
-
-def line_by_point_and_normal_vector(point, normal):
-    px, py = point
-    nx, ny = normal
-    if nx == 0 or ny == 0:
-        return lambda x: 0
-    return lambda x: py - ((nx * (x - px)) / ny)
-
-
-def distance_between_point_and_line(point, a, b, c):
-    px, py = point
-    num = abs(a*px + b*py + c)
-    den = np.sqrt(a*a + b*b)
-    return num/den
-
-
-def distance_between_point_and_plane(point, a, b, c, d):
-    px, py, pz = point
-    num = abs(a*px + b*py + c*pz + d)
-    den = np.sqrt(a*a + b * b + c*c)
-    return num/den
-
-
-def distance_between_parallel_planes(a, b, c, d1, d2):
-    return abs(d2-d1) / np.sqrt(a*a + b*b + c*c)
-
-
-def angle_between_planes(p1, p2):
-    a1, b1, _ = p1
-    a2, b2, _ = p2
-    tg = (a1*b2 - b1*a2) / (a1*a2 + b1*b2)
-    return np.arctan(tg)
-
-
-def angle_between_vectors_3D(v1, v2):
-    return np.arccos(vector_dot_3D(v1, v2) / (vector_magnitude_3D(v1) * vector_magnitude_3D(v2)))
-
-
-def angle_between_vectors(v1, v2):
-    v1x, v1y = v1
-    v2x, v2y = v2
-    return angle_between_vectors_3D([v1x, v1y, 0], [v2x, v2y, 0])
-
-
-def vector_dot_3D(v1, v2):
-    v1x, v1y, v1z = v1
-    v2x, v2y, v2z = v2
-    return v1x*v2x+v1y*v2y+v1z*v2z
-
-
-def vector_dot(v1, v2):
-    v1x, v1y = v1
-    v2x, v2y = v2
-    return vector_dot_3D([v1x, v1y, 0], [v2x, v2y, 0])
-
-
-def vector_cross_3D(v1, v2):
-    v1x, v1y, v1z = v1
-    v2x, v2y, v2z = v2
-    i = (v1y*v2z) - (v2y*v1z)
-    j = -((v1x*v2z) - (v2x*v1z))
-    k = (v1x*v2y) - (v2x*v1y)
-    return np.array([i, j, k])
-
-
-def vector_cross(v1, v2):
-    v1x, v1y = v1
-    v2x, v2y = v2
-    return vector_cross_3D([v1x, v1y, 0], [v2x, v2y, 0])
-
-
-def vector_magnitude_3D(v):
-    vx, vy, vz = v
-    return np.sqrt(vx**2+vy**2+vz**2)
-
-
-def vector_magnitude(v):
-    vx, vy = v
-    return vector_magnitude_3D([vx, vy, 0])
-
-
-def projection_on_vector(v, p):
-    return projection_on_vector_3D([v[0], v[1], 0], [p[0], p[1], 0])
-
-
-def projection_on_vector_3D(v, p):
-    vx, vy, vz = v
-    px, py, pz = p
-    return (vx*px + vy*py + vz*pz) / np.sqrt(px**2 + py**2 + pz**2)
-
-def direction_cosines(vector):
-    return direction_cosines_3D([vector[0], vector[1], 0])[:-1]
-
-
-def direction_cosines_3D(vector):
-    x, y, z = vector
-    magnitude = np.sqrt(x**2 + y**2 + z**2)
-    cosa = x/magnitude
-    cosb = y/magnitude
-    cosy = z/magnitude
-    return np.array([cosa, cosb, cosy])
+import numpy as np
+from mathyn.differentiation import *
+from mathyn.linear_algebra import vector_magnitude_3D, vector_dot_3D, vector_cross_3D
+from mathyn.integration import integral, double_integral
 
 def tangent_plane(f, point):
     px, py, pz = point
@@ -140,14 +26,14 @@ def normal_line_2D(f):
 
 
 def tangent_line_of_curve(f, a, dx=0.01):
-    return lambda x: f(a) + derivative(f, a, dx) * (x - a)
+    return lambda x: f(a) + derivative_at_point(f, a, dx) * (x - a)
 
 
 def normal_line_of_curve(f, a, dx=0.01):
-    df = derivative(f, a, dx)
+    df = derivative_at_point(f, a, dx)
     if abs(df) == 0:
         return lambda x: f(a) * x
-    return lambda x: f(a) + (-1 * np.power(derivative(f, a, dx), -1)) * (x - a)
+    return lambda x: f(a) + (-1 * np.power(derivative_at_point(f, a, dx), -1)) * (x - a)
 
 
 def vector_function(fi, fj, fk):
@@ -168,9 +54,9 @@ def derivative_of_vector_function_at_point(f, point, dx=0.01):
 
 
 def unit_tangent_vector(fi, fj, fk, point):
-    di = derivative(fi, point)
-    dj = derivative(fj, point)
-    dk = derivative(fk, point)
+    di = derivative_at_point(fi, point)
+    dj = derivative_at_point(fj, point)
+    dk = derivative_at_point(fk, point)
     magnitude = vector_magnitude_3D([di, dj, dk])
     return [di / magnitude, dj / magnitude, dk / magnitude]
 
@@ -212,7 +98,7 @@ def normal_comp_of_acceleration(fv, point, dx=0.01):
 
 
 def arc_length_of_vector_function(fi, fj, fk, a, b, n=10):
-    return simpsons_rule(lambda t: np.sqrt(derivative(fi, t)**2 + derivative(fj, t)**2 + derivative(fk, t)**2), a, b, n)
+    return integral(lambda t: np.sqrt(derivative_at_point(fi, t)**2 + derivative_at_point(fj, t)**2 + derivative_at_point(fk, t)**2), a, b, n)
 
 
 def curvature(points):
@@ -223,21 +109,21 @@ def curvature(points):
 
 
 def line_integral(f, a, b, line):
-    return simpsons_rule(lambda x: f(x, line(x)) * np.sqrt(1 + derivative(line, x)**2), a, b)
+    return integral(lambda x: f(x, line(x)) * np.sqrt(1 + derivative_at_point(line, x)**2), a, b)
 
 
 def line_integral_3D(f, a, b, xt, yt, zt):
-    return simpsons_rule(lambda t: f(xt(t), yt(t), zt(t)) *
-                         np.sqrt(derivative(xt, t)**2 + derivative(yt, t)**2 + derivative(zt, t)**2), a, b)
+    return integral(lambda t: f(xt(t), yt(t), zt(t)) *
+                        np.sqrt(derivative_at_point(xt, t)**2 + derivative_at_point(yt, t)**2 + derivative_at_point(zt, t)**2), a, b)
 
 
 def line_integral_by_parametric_curve(f, a, b, xt, yt):
-    return simpsons_rule(lambda t: f(xt(t), yt(t)) * np.sqrt(derivative(xt, t)**2 + derivative(yt, t)**2), a, b)
+    return integral(lambda t: f(xt(t), yt(t)) * np.sqrt(derivative_at_point(xt, t)**2 + derivative_at_point(yt, t)**2), a, b)
 
 
 def line_integral_of_2form_greens_rule(p, q, range, f_lower, f_upper, axis=0, xn=10, yn=10):
     return double_integral(lambda x, y: partial_derivative_2D_by_x(q, [x, y]) - partial_derivative_2D_by_y(p, [x, y]),
-                           range, f_lower, f_upper, axis, xn, yn)
+                            range, f_lower, f_upper, axis, xn, yn)
 
 
 def surface_integral(f, surface, range, f_lower, f_upper, proj="xy", axis=0, xn=10, yn=10):

@@ -2,29 +2,31 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from calculus import *
+# from calculus import *
+import mathyn.differentiation as md
 import mathyn
 
-def func(x): return np.ones_like(x)
+# def func(x): return np.ones_like(x)
+def func(x): return x**2 + 2
 
-df = derivative_function(func)
+df = md.derivative(func)
+d2f = md.derivative(df)
 print(df(3))
-d2f = derivative_function(df)
 print(d2f(3))
 
-ag =  mathyn.differentiation
+integrals =  mathyn.integration
 
 a, b = -2, 2
 n = 10
-s = left_point_rule(func, a, b, n)
+s = integrals.left_point_rule(func, a, b, n)
 print("Left-point sum: {:.4f}".format(s))
-s = right_point_rule(func, a, b, n)
+s = integrals.right_point_rule(func, a, b, n)
 print("Right-point sum: {:.4f}".format(s))
-s = mid_point_rule(func, a, b, n)
+s = integrals.mid_point_rule(func, a, b, n)
 print("Mid-point sum: {:.4f}".format(s))
-s = trapezoidal_rule(func, a, b, n)
+s = integrals.trapezoidal_rule(func, a, b, n)
 print("Trapezoidal rule: {:.4f}".format(s))
-s = simpsons_rule(func, a, b, n)
+s = integrals.simpsons_rule(func, a, b, n)
 print("Simpson's rule: {:.4f}".format(s))
 # l = arc_length(func, 0, 2, n)
 # print("Arc length: {:.4f}".format(l))

@@ -1,14 +1,14 @@
+import numpy as np
+from mathyn.linear_algebra import direction_cosines_3D
+
 def limit(f, x, e=0.001):
     return (f(x-e) + f(x + e)) / 2
 
 def derivative_newtons_method(f, x, dx=0.01): return (f(x+dx) - f(x)) / dx
 
+def derivative_at_point(f, x, dx=0.01): return (f(x + dx) - f(x - dx))/(2 * dx)
 
-def derivative(f, x, dx=0.01): return (f(x + dx) - f(x - dx))/(2 * dx)
-
-
-def derivative_function(f, dx=0.01): return lambda x: derivative(f, x, dx)
-
+def derivative(f, dx=0.01): return lambda x: derivative_at_point(f, x, dx) 
 
 def derivative_by_points(points, dx):
     derivative = []
